@@ -1,21 +1,41 @@
 defmodule Util do
-  @moduledoc """
-  Utility module for displaying messages using java.
-  """
 
-  @doc """
-    Displays a message using a Java dialog.
-  """
   def show_message(message) do
-    System.cmd("java", ["-cp", ".", "pedirDatos", message])
+    System.cmd("java", ["-cp", ".", "Mensaje", message])
   end
 
-  @doc """
-    Prompts the user for input using a Java dialog and returns the input.
-  """
-  def input_data(data) do
-    System.cmd("java", ["-cp", ".", "pedirDatos", "input", data])
+  def input(message) do
+    System.cmd("java", ["-cp", ".", "Mensaje", "input", message])
     |> elem(0)
     |> String.trim()
+  end
+  def input(message, :string) do
+    System.cmd("java", ["-cp", ".", "Mensaje", "input", message])
+    |> elem(0)
+    |> String.trim()
+  end
+
+  def input(message, :integer) do
+    try do
+      message
+      |> input(:string)
+      |> String.to_integer()
+    rescue
+      ArgumentError ->
+        IO.puts("No se ha introducido un valor entero valido")
+        input(message, :integer)
+    end
+  end
+
+  def input(message, :float) do
+    try do
+      message
+      |> input(:string)
+      |> String.to_float()
+    rescue
+      ArgumentError ->
+        IO.puts("No se ha introducido un valor decimal valido")
+        input(message, :float)
+    end
   end
 end
